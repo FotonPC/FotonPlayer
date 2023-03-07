@@ -34,7 +34,7 @@ class App(ttk.Frame):
         self.init_play_tab()
         self.init_library_tab()
         self.style=ttkthemes.ThemedStyle()
-        self.style.configure("H.TLabel", font=("JetBrains Mono", 16))
+        self.style.configure("H.TLabel", font=("JetBrains Mono", 17))
         self.tk_window.mainloop()
     def init_play_tab(self, event=None):
         self.play_tab = ttk.Frame(self.notebook)
@@ -47,13 +47,18 @@ class App(ttk.Frame):
         ttk.Button(self.play_frame1, text="Пауза", width=16, command=self.play_tab_pause).pack(side='left')
         ttk.Button(self.play_frame1, text="Заново", command=self.play_tab_play, width=16).pack(side='right')
         ttk.Button(self.play_frame1, text="Возобновить", command=self.play_tab_unpause, width=16).pack()
-
+        self.play_scroll_volume = ttk.Scrollbar(self.play_tab, orient='horizontal', command=self.hz)
+        self.play_scroll_volume.pack(fill='x')
+        self.play_scroll_volume.set(0.99, 1)
+    def hz(self, _, moveto, **kwargs):
+        pygame.mixer.music.set_volume(min(1, max(0, float(moveto))))
+        self.play_scroll_volume.set(float(moveto), float(moveto)+.01)
     def play_tab_pause(self, event=None):
         pygame.mixer.music.pause()
     def play_tab_unpause(self, event=None):
         pygame.mixer.music.unpause()
     def play_tab_play(self, event=None):
-        pygame.mixer.music.play(0)
+        pygame.mixer.music.play(-1)
     def init_library_tab(self, event=None):
         self.lib_tab = ttk.Frame(self.notebook)
         self.lib_tab.pack(fill='both', expand=True)
