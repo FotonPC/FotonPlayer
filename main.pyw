@@ -1,4 +1,4 @@
-import os
+import os, sys
 import tkinter as tk
 from tkinter import ttk
 import ttkthemes
@@ -8,6 +8,12 @@ import eyed3
 import mutagen
 from mutagen.mp3 import MP3
 
+SYSTEM_OS = sys.platform
+print(SYSTEM_OS)
+if SYSTEM_OS == 'win32':
+    FS_SEP = '\\'
+else:
+    FS_SEP = '/'
 
 def treeview_sort_column(tv, col, reverse):
     l = [(int(tv.set(k, col)) if col == 3 else tv.set(k, col), k) for k in tv.get_children('')]
@@ -126,14 +132,14 @@ class App(ttk.Frame):
         self.treelib1ysb.pack(side='right', fill='y')
         for direct in self.music_dirs:
             for file in os.listdir(direct):
-                if os.path.isfile(direct + '\\' + file):
+                if os.path.isfile(direct + FS_SEP + file):
                     if file.endswith(".mp3"):
-                        af = eyed3.load(direct + '\\' + file)
+                        af = eyed3.load(direct + FS_SEP + file)
                         tag = af.tag
                         self.tree_lib1.insert("", tk.END,
                                               values=(tag.title, tag.album, tag.artist,
-                                                      str(int(MP3(direct + '\\' + file).info.length)),
-                                                      direct + '\\' + file), )
+                                                      str(int(MP3(direct + FS_SEP + file).info.length)),
+                                                      direct + FS_SEP + file), )
         treeview_sort_column(self.tree_lib1, 0, False)
         treeview_sort_column(self.tree_lib1, 1, False)
         treeview_sort_column(self.tree_lib1, 2, False)
