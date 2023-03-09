@@ -1,0 +1,4 @@
+pygame
+eye3d
+mutagen
+ttkthemes
